@@ -29,7 +29,7 @@ class SerialPort {
   enum flush_type
   {
     flush_receive = TCIFLUSH,
-    flush_send = TCIOFLUSH,
+    flush_send = TCOFLUSH,
     flush_both = TCIOFLUSH
   };
 
