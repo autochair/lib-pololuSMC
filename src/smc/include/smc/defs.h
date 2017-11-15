@@ -134,12 +134,16 @@ enum class SMC_VAR: char {
 
   // RC Channel Inputs
   RC1_UNLIMITED_RAW          = 0x04,            /**< Positive Pulse Width on RC1.
+                                                     Type: unsigned 16-bit
                                                      Units: 0.25 us
                                                      0xFFFF if no valid signal is detected */
   RC1_RAW                    = 0x05,            /**< Positive Pulse Width on RC1
+                                                     Type: unsigned 16-bit
                                                      Units: 0.25 us
                                                      0xFFFF if no valid signal or outside of error settings */
   RC1_SCALED                 = 0x06,            /**< Scaled RC1 Raw Value 
+                                                     Type: signed 16-bit
+                                                     Units: internal units
                                                      0 if raw is 0xFFFF
                                                      -3200 to +3200 otherwise */
   RC2_UNLIMITED_RAW          = 0x08,            /**< See RC1_UNLIMITED_RAW */
@@ -148,12 +152,16 @@ enum class SMC_VAR: char {
 
   // Analog Channel Inputs
   AN1_UNLIMITED_RAW          = 0x0C,            /**< 12-bit ADC reading on analog channel 1
+                                                     Type: unsigned 16-bit
                                                      Units: counts, 0.0008059 volts/count
                                                      0xFFFF if the controller detects the input is disconnected */
   AN1_RAW                    = 0x0D,            /**< 12-bit ADC reading on analog channel 1
+                                                     Type: unsigned 16-bit
                                                      Units: counts, 0.0008059 volts/count
                                                      0xFFFF if disconnected or signal outside of error settings */
   AN1_SCALED                 = 0x0E,            /**< Scaled AN1 Raw Value
+                                                     Type: signed 16-bit
+                                                     Units: internal units
                                                      0 if disconnected
                                                      -3200 to +3200 otherwise */
   AN2_UNLIMITED_RAW          = 0x10,            /**< See AN1_UNLIMITED_RAW */
@@ -162,15 +170,58 @@ enum class SMC_VAR: char {
 
   // Diagnostic Variables
   TARGET_SPEED               = 0x14,            /**< Motor Target Speed requested by controlling interface 
+                                                     Type: signed 16-bit
+                                                     Units: internal units
                                                      -3200 to +3200 */
   CURRENT_SPEED              = 0x15,            /**< Current speed of motor
+                                                     Type: signed 16-bit
+                                                     Units: internal units
                                                      -3200 to +3200 */
   BRAKE_AMOUNT               = 0x16,            /**< How hard controller is braking when speed = 0 
+                                                     Type: unsigned 16-bit
                                                      0-32 mapped to 0-100% duty cycle
                                                      0 - Full coast (motor leads open)
                                                      32 - Full brake (motor leads fully shorted) */
-  INPUT_VOLTAGE              = 0x17,            /**< 
-  
-  
+  INPUT_VOLTAGE              = 0x17,            /**< Measured voltage on the VIN pin
+                                                     Type: unsigned 16-bit
+                                                     Units: mV */
+  TEMPERATURE                = 0x18,            /**< Board temperature as measured by sensor near motor driver.
+                                                     Type: unsigned 16-bit
+                                                     Units: 0.1 C
+                                                     Temperatures below freezing reported as 0. */
+  RC_PERIOD                  = 0x1A,            /**< RC1 period if a valid signal is available.
+                                                     Type: unsigned 16-bit
+                                                     0 otherwise */
+  BAUD_RATE_REGISTER         = 0x1B,            /**< Value of the controller's Baud Rate Register (BRR)
+                                                     Type: unsigned 16-bit
+                                                     Units: seconds per bits
+                                                     bps = 72,000,000/BRR */
+  SYSTEM_TIME_LOW            = 0x1C,            /**< Number of milliseconds since last reset or power cycle
+                                                     Type: unsigned 16-bit
+                                                     Lowest two bytes */
+  SYSTEM_TIME_HIGH           = 0x1D,            /**< Number of milliseconds since last reset or power cycle
+                                                     Type: unsigned 16-bit
+                                                     Highest two bytes */
+
+  // Temporary Motor Limits
+  MAX_SPEED_FORWARD          = 0x1E,            /**< Maximum allowed motor speed in the forward direction
+                                                     Type: unsigned 16-bit
+                                                     Units: internal units
+                                                     0-3200 */
+  MAX_ACCELERATION_FORWARD   = 0x1F,            /**< Maximum allowed motor acceleration in the forward direction
+                                                     Type: unsigned 16-bit
+                                                     Units: delta(speed) per update period
+                                                     0 to 3200, 0 means no limit */
+  MAX_DECELERATION_FORWARD   = 0x20,            /**< Maximum allowed motor deceleration in the forward direction
+                                                     Type: unsigned 16-bit
+                                                     Units: delta(speed) per update period
+                                                     0 to 3200, 0 means no limit */
+  BRAKE_DURATION_FORWARD     = 0x21,            /**< Time spent braking (at speed = 0) when transitioning from forward to reverse
+                                                     Type: unsigned 16-bit
+                                                     Units: ms */
+  MAX_SPEED_REVERSE          = 0x24,            /**< Same as MAX_SPEED_FORWARD in reverse direction */
+  MAX_ACCELERATION_REVERSE   = 0x25,            /**< Same as MAX_ACCELERATION_FORWARD in reverse direction */
+  MAX_DECELERATION_REVERSE   = 0x26,            /**< Same as MAX_DECELERATION_FORWARD in reverse direction */
+  BRAKE_DURATION_REVERSE     = 0x27             /**< Time spent brakin (at speed = 0) when transitioning from reverse to forward */
 };
 #endif /* SMC_DEFS_H_ */
