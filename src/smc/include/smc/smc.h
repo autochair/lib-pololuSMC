@@ -2,139 +2,148 @@
 #define SMC_H_
 
 #include "SerialPort.h"
+#include "defs.h"
 #include <string>
 
 #define MAX_NUM_SMC_DEVICES 127
 
 class SMC {
 private:
-    /* TODO
-     serial connection (private) 
-     serial port
-     baud rate
-     motor list (public get, public set) - list of motor id's that are supposed to be on the com port
-     motor state (public get, private set) - current state of the motor (on, off, error)
-     motor direction (public get, private set) - forward or backwards
-   */
 
-  /*serial port*/
-  int _baudrate;
-  std::string _port;
-  SerialPort _conn;
+  const SerialPort& _conn; /**< Serial Port for SMC communication */
+  char buffer[6];
 
-  /*smc*/
-  int _smcs[MAX_NUM_SMC_DEVICES];
-  
+  void initPololuMsg(uint8_t device){
+    buffer[0] = POLOLU_COM::HEADER;
+    buffer[1] = device;
+  };
 
 public:
-  /*TODO
 
-    ctors
-    serial setup
-    
-
-    enums:
-
-    Status Flags:
-     Error Status
-     Errors Occurred
-     Serial Errors Occurred
-     Limit Status
-     Reset Flags
-
-    RC Channel Inputs:
-     RC1 Unlimited Raw Value
-     RC1 Raw Value
-     RC1 Scaled Value
-     RC2 Unlimited Raw Value
-     RC2 Raw Value
-     RC2 Scaled Value
-
-    Analog Channel Inputs:
-     AN1 Unlimited Raw
-     AN1 Raw Value
-     AN1 Scaled Value
-     AN2 Unlimited Raw Value
-     AN2 Raw Value
-     AN2 Scaled Value
-
-    Diaganotic Variables:
-     Target Speed
-     Speed
-     Brake Amount
-     Input Voltage
-     Temperature
-     RC Period
-     Baud Rate Register
-     System Time (low)
-     System Time (high)
-
-     Temporary Motor Limits:
-      Max Speed Forward
-      Max Acceleration Forward
-      Max Deceleration Forward
-      Brake Duration Forward
-      Max Speed Reverse
-      Max Acceleration Reverse
-      Max Deceleration Reverse
-      Brake Duration Reverse
-
-    Bitmasks:
-
-     Error Status
-      Safe Start Violation
-      Required Channel Invalid
-      Serial Error
-      Command Timeout
-      Limit/Kill Switch
-      Low VIN
-      High VIN
-      Over Temperature
-      Motor Driver Error
-      ERR Line High
-      
-     Serial Error
-      Frame
-      Noise
-      RX Overrun
-      Format
-      CRC
-      
-     Limit Status
-      Error/SafeStart
-      Temperature
-      Max Speed
-      Starting Speed
-      Motor Speed not equal to target due to accel/brake limits
-      RC1 configured as kill switch and is active
-      RC2 limit active
-      AN1 limit active
-      AN2 limit active
-      USB kill switch active
-
-     Reset Flags
-      RST pin pulled low by external source
-      Power reset 
-      Software Reset
-      Watchdog Timer Reset
-
-    commands:
-
-    Exit Safe-Start
-    Motor Forward
-    Motor Reverse
-    Fast Set Speed (mini ssc)
-    Motor Brake
-    Get Variable
-    Set Motor Limit
-    Get Firmware Version
-    Stop Motor
-
-    
-
+  /**
+   * Initialize SMC
+   * @param conn Reference to an open serial port
    */
+  SMC(const SerialPort &conn);
 
+  /**
+   * Sends the exit safe start command to all devices
+   * @return 1 if successfully sent
+   */
+  int exitSafeStart();
+  
+  /**
+   * Sends the exit safe start command to specified devices
+   * @param uint8_t ID of device
+   * @return 1 if successfully sent
+   */
+  int exitSafeStart(uint8_t device);
 
+  /**
+   * Sends forward pwm value to all devices
+   * @param pwm value between 0-3200
+   */
+  int motorForward(uint16_t pwm );
+
+  /**
+   * Sends forward pwm value to specified device
+   * @param uint8_t ID of device
+   * @param pwm value between 0-3200
+   */
+  int motorForward(uint8_t device, uint16_t pwm);
+
+  /**
+   * Sends reverse  pwm value to all devices
+   * @param pwm value between 0-3200
+   */
+  int motorReverse(uint16_t pwm);
+
+  /**
+   * Sends reverse  pwm value to specified device
+   * @param uint8_t ID of device
+   * @param pwm value between 0-3200
+   */
+  int motorReverse(uint8_t device, uint16_t pwm);
+
+  /**
+   * Sends low resolution forward pwm value to all devices
+   * @param pwm value between 0-127
+   */
+  int motorForward_7Bit(uint8_t pwm );
+
+  /**
+   * Sends low resolution forward pwm value to specified device
+   * @param uint8_t ID of device
+   * @param pwm value between 0-127
+   */
+  int motorForward_7Bit(uint8_t device, uint8_t pwm);
+
+  /**
+   * Sends low resolution reverse  pwm value to all devices
+   * @param pwm value between 0-127
+   */
+  int motorReverse_7Bit(uint8_t pwm);
+
+  /**
+   * Sends low resolution reverse  pwm value to specified device
+   * @param uint8_t ID of device
+   * @param pwm value between 0-127
+   */
+  int motorReverse_7Bit(uint8_t device, uint8_t pwm);
+
+  /**
+   * Sends motor brake duty cycle to all devices
+   * @param Duty cycle value between 1-32
+   */
+  int motorBrake(uint8_t duty);
+
+  /**
+   * Sends motor brake duty cycle to specified device
+   * @param uint8_t ID of device
+   * @param Duty cycle value between 1-32
+   */
+  int motorBrake(uint8_t device, uint8_t duty);
+
+  /**
+   * Sends stop command to all devices
+   * Enters safe start mode
+   */
+  int motorStop();
+  
+  /**
+   * Sends stop command to specified device
+   * Enters safe start mode
+   * @param uint8_t ID of device
+   */
+  int motorStop(uint8_t device);
+
+  /**
+   * Sends a set limit command to all devices
+   * @param uint8_t ID of device
+   * @param uint8_t ID of limit 
+   * @param limit value
+   * @param uint8_t ref response code
+   * @return 1 if success, 0 if failed to send
+   */
+  int setMotorLimit(uint8_t device, uint8_t limitID, uint16_t val, uint8_t &responseCode);
+
+  /**
+   * Reads the specified variable on a specific device 
+   * @param uint8_t ID of device
+   * @param uint8_t ID of variable
+   */
+  int getMotorVariable(uint8_t device, uint8_t variableID);
+
+  /**
+   * Reads the firmware version of a specific device
+   * @param uint8_t ID of device
+   * @param uint16_t ref for product ID
+   * @param uint8_t ref for major version number (BCD)
+   * @param uint8_t ref for minor version number (BCD)
+   * @return 1 if success
+   */
+  int getFirmwareVersion(uint8_t device, uint16_t &productID, uint8_t &majorVersion, uint8_t &minorVersion);
+  
 }
 
 #endif /* SMC_H_ */

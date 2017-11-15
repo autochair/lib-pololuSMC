@@ -11,9 +11,14 @@ SerialPort::SerialPort() {
 
 
 int SerialPort::connect(std::string device, int baud) {
-  port->open((char *) device.c_str());
-  port->set_option(boost::asio::serial_port_base::baud_rate(baud));
-  return 1;
+  try{
+    port->open((char *) device.c_str());
+    port->set_option(boost::asio::serial_port_base::baud_rate(baud));
+    return 1;
+  }
+  catch(...){
+    return 0;
+  }
 }
 
 void SerialPort::disconnect(void){
