@@ -13,8 +13,8 @@ enum class POLOLU_COM: int8_t {
     EXIT_SS                  = 0x03,            /**< Exits safe start mode */
     MOTOR_FORWARD            = 0x05,            /**< Power Motor in Forward Direction */
     MOTOR_REVERSE            = 0x06,            /**< Power Motor in Reverse Direction */
-    MOTOR_FORWARD_7BIT       = 0X09,            /**< Power Motor in Forward Direction, 7-bit Speed */
-    MOTOR_REVERSE_7BIT       = 0X0A,            /**< Power Motor in Reverse Direction 7-bit Speed */
+    MOTOR_FORWARD_7BIT       = 0X09,            /**< Power Motor in Forward Direction, 7-bit Pwm */
+    MOTOR_REVERSE_7BIT       = 0X0A,            /**< Power Motor in Reverse Direction 7-bit Pwm */
     MOTOR_BRAKE              = 0x12,            /**< Brake Duty Cycle */
     MOTOR_STOP               = 0x60,            /**< Stop Motor and Enter Safe Start */
     SET_LIMIT                = 0x22,            /**< Set Temporary Limit for Motor */
@@ -33,8 +33,8 @@ enum class COMPACT_COM: int8_t {
     EXIT_SS                  = 0x83,            /**< Exits safe start mode */
     MOTOR_FORWARD            = 0x85,            /**< Power Motor in Forward Direction */
     MOTOR_REVERSE            = 0x86,            /**< Power Motor in Reverse Direction */
-    MOTOR_FORWARD_7BIT       = 0X89,            /**< Power Motor in Forward Direction, 7-bit Speed */
-    MOTOR_REVERSE_7BIT       = 0X8A,            /**< Power Motor in Reverse Direction 7-bit Speed */
+    MOTOR_FORWARD_7BIT       = 0X89,            /**< Power Motor in Forward Direction, 7-bit Pwm */
+    MOTOR_REVERSE_7BIT       = 0X8A,            /**< Power Motor in Reverse Direction 7-bit Pwm */
     MOTOR_BRAKE              = 0x92,            /**< Brake Duty Cycle */
     MOTOR_STOP               = 0xE0,            /**< Stop Motor and Enter Safe Start */
     SET_LIMIT                = 0xA2,            /**< Set Temporary Limit for Motor */
@@ -49,13 +49,13 @@ enum class COMPACT_COM: int8_t {
  */
 enum class POLOLU_COM_BYTES: int8_t {
 
-    EXIT_SS                  = 2,               /**< No Data */
-    MOTOR_FORWARD            = 4,               /**< Byte1: Low 5 bits of speed (Spd & 0x1F)
-                                                     Byte2: Remaining bits of speed (Spd >> 5) */
-    MOTOR_REVERSE            = 4,               /**< Byte1: Low 5 bits of speed (Spd & 0x1F)
-                                                     Byte2: Remaining bits of speed (Spd >> 5) */
-    MOTOR_FORWARD_7BIT       = 3,               /**< Byte1: Speed in increments 0-127 (mapped from 0-3200) */
-    MOTOR_REVERSE_7BIT       = 3,               /**< Byte1: Speed in increments 0-127 (mapped from 0-3200) */
+    EXIT_SS                  = 2,               /**< No Data */-
+    MOTOR_FORWARD            = 4,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
+                                                     Byte2: Remaining bits of pwm (Spd >> 5) */
+    MOTOR_REVERSE            = 4,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
+                                                     Byte2: Remaining bits of pwm (Spd >> 5) */
+    MOTOR_FORWARD_7BIT       = 3,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
+    MOTOR_REVERSE_7BIT       = 3,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
     MOTOR_BRAKE              = 3,               /**< Byte1: Braking Duty Cycle 1-32 */
     MOTOR_STOP               = 2,               /**< No Data */
     SET_LIMIT                = 5,               /**< Byte1: Limit ID
@@ -73,12 +73,12 @@ enum class POLOLU_COM_BYTES: int8_t {
 enum class COMPACT_COM_BYTES: int8_t {
 
     EXIT_SS                  = 0,               /**< No Data */
-    MOTOR_FORWARD            = 2,               /**< Byte1: Low 5 bits of speed (Spd & 0x1F)
-                                                     Byte2: Remaining bits of speed (Spd >> 5) */
-    MOTOR_REVERSE            = 2,               /**< Byte1: Low 5 bits of speed (Spd & 0x1F)
-                                                     Byte2: Remaining bits of speed (Spd >> 5) */
-    MOTOR_FORWARD_7BIT       = 1,               /**< Byte1: Speed in increments 0-127 (mapped from 0-3200) */
-    MOTOR_REVERSE_7BIT       = 1,               /**< Byte1: Speed in increments 0-127 (mapped from 0-3200) */
+    MOTOR_FORWARD            = 2,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
+                                                     Byte2: Remaining bits of pwm (Spd >> 5) */
+    MOTOR_REVERSE            = 2,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
+                                                     Byte2: Remaining bits of pwm (Spd >> 5) */
+    MOTOR_FORWARD_7BIT       = 1,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
+    MOTOR_REVERSE_7BIT       = 1,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
     MOTOR_BRAKE              = 1,               /**< Byte1: Braking Duty Cycle 1-32 */
     MOTOR_STOP               = 0,               /**< No Data */
     SET_LIMIT                = 3,               /**< Byte1: Limit ID
@@ -101,7 +101,7 @@ enum class COM_RES_BYTES: int8_t {
     MOTOR_REVERSE_7BIT       = 0,               /**< No Response */
     MOTOR_BRAKE              = 0,               /**< No Response */
     MOTOR_STOP               = 0,               /**< No Response */
-    SPEED                    = 0,               /**< No Response */
+    PWM                      = 0,               /**< No Response */
     SET_LIMIT                = 1,               /**< Byte1: Limit Code: 0 - Okay
                                                                         1 - Hard Forward Limit Conflict
                                                                         2 - Hard Reverse Limit Conflict
@@ -115,12 +115,12 @@ enum class COM_RES_BYTES: int8_t {
 };
 
 enum class SSC_COM: int8_t {
-  SSC_SPEED                      = 0XFF             /**< Set Motor Speed, Direction Based On Value */
+  SSC_PWM                    = 0XFF             /**< Set Motor Pwm, Direction Based On Value */
 };
 
 enum class SSC_COM_BYTES: int8_t {
-  SSC_SPEED                      = 2                /**< Byte1: device ID
-                                                     Byte2: Speed, 0-Full Reverse, 127-Still, 254-Full Forward */
+  SSC_PWM                    = 2                /**< Byte1: device ID
+                                                     Byte2: Pwm, 0-Full Reverse, 127-Still, 254-Full Forward */
 };
 
 enum class SMC_VAR: int8_t {
@@ -169,15 +169,15 @@ enum class SMC_VAR: int8_t {
   AN2_SCALED                 = 0x12,            /**< See AN1_SCALED */
 
   // Diagnostic Variables
-  TARGET_SPEED               = 0x14,            /**< Motor Target Speed requested by controlling interface 
+  TARGET_PWM                 = 0x14,            /**< Motor Target Pwm requested by controlling interface 
                                                      Type: signed 16-bit
                                                      Units: internal units
                                                      -3200 to +3200 */
-  CURRENT_SPEED              = 0x15,            /**< Current speed of motor
+  CURRENT_PWM                = 0x15,            /**< Current pwm of motor
                                                      Type: signed 16-bit
                                                      Units: internal units
                                                      -3200 to +3200 */
-  BRAKE_AMOUNT               = 0x16,            /**< How hard controller is braking when speed = 0 
+  BRAKE_AMOUNT               = 0x16,            /**< How hard controller is braking when pwm = 0 
                                                      Type: unsigned 16-bit
                                                      0-32 mapped to 0-100% duty cycle
                                                      0 - Full coast (motor leads open)
@@ -204,25 +204,25 @@ enum class SMC_VAR: int8_t {
                                                      Highest two bytes */
 
   // Temporary Motor Limits
-  MAX_SPEED_FORWARD          = 0x1E,            /**< Maximum allowed motor speed in the forward direction
+  MAX_PWM_FORWARD            = 0x1E,            /**< Maximum allowed motor pwm in the forward direction
                                                      Type: unsigned 16-bit
                                                      Units: internal units
                                                      0-3200 */
   MAX_ACCELERATION_FORWARD   = 0x1F,            /**< Maximum allowed motor acceleration in the forward direction
                                                      Type: unsigned 16-bit
-                                                     Units: delta(speed) per update period
+                                                     Units: delta(pwm) per update period
                                                      0 to 3200, 0 means no limit */
   MAX_DECELERATION_FORWARD   = 0x20,            /**< Maximum allowed motor deceleration in the forward direction
                                                      Type: unsigned 16-bit
-                                                     Units: delta(speed) per update period
+                                                     Units: delta(pwm) per update period
                                                      0 to 3200, 0 means no limit */
-  BRAKE_DURATION_FORWARD     = 0x21,            /**< Time spent braking (at speed = 0) when transitioning from forward to reverse
+  BRAKE_DURATION_FORWARD     = 0x21,            /**< Time spent braking (at pwm = 0) when transitioning from forward to reverse
                                                      Type: unsigned 16-bit
                                                      Units: ms */
-  MAX_SPEED_REVERSE          = 0x24,            /**< Same as MAX_SPEED_FORWARD in reverse direction */
+  MAX_PWM_REVERSE            = 0x24,            /**< Same as MAX_PWM_FORWARD in reverse direction */
   MAX_ACCELERATION_REVERSE   = 0x25,            /**< Same as MAX_ACCELERATION_FORWARD in reverse direction */
   MAX_DECELERATION_REVERSE   = 0x26,            /**< Same as MAX_DECELERATION_FORWARD in reverse direction */
-  BRAKE_DURATION_REVERSE     = 0x27             /**< Time spent brakin (at speed = 0) when transitioning from reverse to forward */
+  BRAKE_DURATION_REVERSE     = 0x27             /**< Time spent brakin (at pwm = 0) when transitioning from reverse to forward */
 };
 
 /**
@@ -260,12 +260,12 @@ enum class SERIAL_ERROR: int16_t {
 enum class LIMIT_STATUS: int16_t {
 
   SAFE_START                 = 0x0001,            /**< Bit0: Safe Start violation */
-  OVER_TEMPERATURE           = 0x0002,            /**< Bit1: Temperature is actively reducing speed */
-  MAX_SPEED                  = 0x0004,            /**< Bit2: Max speed limit is actively reducing speed 
-                                                             taret speed > max speed */
-  STARTING_SPEED             = 0x0008,            /**< Bit3: Starting speed limit is actively reducing speed to zero
-                                                             target speed < starting speed */
-  ACCEL_BRAKE                = 0x0010,            /**< Bit4: Motor speed is not equal to target speed because of accleration or brake limits */
+  OVER_TEMPERATURE           = 0x0002,            /**< Bit1: Temperature is actively reducing pwm */
+  MAX_PWM                    = 0x0004,            /**< Bit2: Max pwm limit is actively reducing pwm 
+                                                             taret pwm > max pwm */
+  STARTING_PWM               = 0x0008,            /**< Bit3: Starting pwm limit is actively reducing pwm to zero
+                                                             target pwm < starting pwm */
+  ACCEL_BRAKE                = 0x0010,            /**< Bit4: Motor pwm is not equal to target pwm because of accleration or brake limits */
   RC1_KILL                   = 0x0020,            /**< Bit5: RC1 is configured as kill switch and is active */
   RC2_KILL                   = 0x0040,            /**< Bit6: RC2 is configured as kill switch and is active */
   AN1_KILL                   = 0x0080,            /**< Bit7: AN1 is configured as kill switch and is active */
