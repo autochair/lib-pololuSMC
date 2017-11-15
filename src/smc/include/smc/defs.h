@@ -1,14 +1,14 @@
 #ifndef SMC_DEFS_H_
 #define SMC_DEFS_H_
 
-#include <cstdint>
+#include <stdint.h>
 
 /**
  * Enumeration of all commands available to send to the pololu simple motor controller
  * Pololu Format
  * OR the command with 0x80 to produce the command byte for the Compact Format
  */
-enum class POLOLU_COM: char {
+enum class POLOLU_COM: int8_t {
 
     EXIT_SS                  = 0x03,            /**< Exits safe start mode */
     MOTOR_FORWARD            = 0x05,            /**< Power Motor in Forward Direction */
@@ -28,7 +28,7 @@ enum class POLOLU_COM: char {
  * Compact Format
  * OR the command with 0x80 to produce the command byte for the Compact Format
  */
-enum class COMPACT_COM: char {
+enum class COMPACT_COM: int8_t {
 
     EXIT_SS                  = 0x83,            /**< Exits safe start mode */
     MOTOR_FORWARD            = 0x85,            /**< Power Motor in Forward Direction */
@@ -47,7 +47,7 @@ enum class COMPACT_COM: char {
  * Pololu Format
  * 
  */
-enum class POLOLU_COM_BYTES: char {
+enum class POLOLU_COM_BYTES: int8_t {
 
     EXIT_SS                  = 2,               /**< No Data */
     MOTOR_FORWARD            = 4,               /**< Byte1: Low 5 bits of speed (Spd & 0x1F)
@@ -70,7 +70,7 @@ enum class POLOLU_COM_BYTES: char {
  * Compact Format
  * 
  */
-enum class COMPACT_COM_BYTES: char {
+enum class COMPACT_COM_BYTES: int8_t {
 
     EXIT_SS                  = 0,               /**< No Data */
     MOTOR_FORWARD            = 2,               /**< Byte1: Low 5 bits of speed (Spd & 0x1F)
@@ -92,7 +92,7 @@ enum class COMPACT_COM_BYTES: char {
  * The number of bytes returned for a command
  * Indepent of command format
  */
-enum class COM_RES_BYTES: char {
+enum class COM_RES_BYTES: int8_t {
 
     EXIT_SS                  = 0,               /**< No Response */
     MOTOR_FORWARD            = 0,               /**< No Response */
@@ -114,21 +114,21 @@ enum class COM_RES_BYTES: char {
                                                      Byte4: Major Firmware Version (BDC) */
 };
 
-enum class SSC_COM: char {
-  SPEED                      = 0XFF             /**< Set Motor Speed, Direction Based On Value */
+enum class SSC_COM: int8_t {
+  SSC_SPEED                      = 0XFF             /**< Set Motor Speed, Direction Based On Value */
 };
 
-enum class SSC_COM_BYTES: char {
-  SPEED                      = 2                /**< Byte1: device ID
+enum class SSC_COM_BYTES: int8_t {
+  SSC_SPEED                      = 2                /**< Byte1: device ID
                                                      Byte2: Speed, 0-Full Reverse, 127-Still, 254-Full Forward */
 };
 
-enum class SMC_VAR: char {
+enum class SMC_VAR: int8_t {
 
   //status flag registers
   ERROR_STATUS               = 0x00,            /**< Errors that are currently stopping the motor */
-  ERRORS_OCCURRED            = 0x01,            /**< Errors that have occurred since this was last read */
-  SERIAL_ERRORS_OCCURRED     = 0x02,            /**< Serial Errors that have occurred since this was last read */
+  ERRORS                     = 0x01,            /**< Errors that have occurred since this was last read */
+  SERIAL_ERRORS              = 0x02,            /**< Serial Errors that have occurred since this was last read */
   LIMIT_STATUS               = 0x03,            /**< Set bits indicate things currently limiting motor */
   RESET_FLAGS                = 0x7F,            /**< Flags indicating soruce of last board reset */
 
@@ -224,4 +224,64 @@ enum class SMC_VAR: char {
   MAX_DECELERATION_REVERSE   = 0x26,            /**< Same as MAX_DECELERATION_FORWARD in reverse direction */
   BRAKE_DURATION_REVERSE     = 0x27             /**< Time spent brakin (at speed = 0) when transitioning from reverse to forward */
 };
+
+/**
+ * Bitmask for errors in SMC_VAR::ERROR_SATUS
+ */
+enum class ERROR_STATUS: int16_t {
+
+  SAFE_START                 = 0x0001,            /**< Bit0: Safe start violation error */
+  CHANNEL_INVALID            = 0x0002,            /**< Bit1: Required Channel Invalid */
+  SERIAL_ERROR               = 0x0004,            /**< Bit2: Serial Error */
+  COMMAND_TIMEOUT            = 0x0008,            /**< Bit3: Command Timeout */
+  LIMIT_KILL_SWITCH          = 0x0010,            /**< Bit4: Limit/Kill Switch */
+  LOW_VIN                    = 0x0020,            /**< Bit5: Low Input Voltage */
+  HIGH_VIN                   = 0x0040,            /**< Bit6: High Input Voltage */
+  OVER_TEMPERATURE           = 0x0080,            /**< Bit7: Over Temperature */
+  MOTOR_DRIVE_ERROR          = 0x0100,            /**< Bit8: Motor Drive Error */
+  ERR_LINE                   = 0x0200             /**< Bit9: Error Line High */
+};
+
+/**
+ * Bitmask for serial errors in SMC_VAR::SERIAL_ERRORS
+ */
+enum class SERIAL_ERROR: int16_t {
+
+  FRAME                      = 0x0002,            /**< Bit1: Frame */
+  NOISE                      = 0x0004,            /**< Bit2: Noise */
+  RX_OVERRUN                 = 0x0008,            /**< Bit3: RX Overrun */
+  FORMAT                     = 0x0010,            /**< Bit4: Format */
+  CRC                        = 0x0020             /**< Bit5: CRC */
+};
+
+/*
+ * Bitmask for limit statuses in SMC_VAR::LIMIT_STATUS
+ */
+enum class LIMIT_STATUS: int16_t {
+
+  SAFE_START                 = 0x0001,            /**< Bit0: Safe Start violation */
+  OVER_TEMPERATURE           = 0x0002,            /**< Bit1: Temperature is actively reducing speed */
+  MAX_SPEED                  = 0x0004,            /**< Bit2: Max speed limit is actively reducing speed 
+                                                             taret speed > max speed */
+  STARTING_SPEED             = 0x0008,            /**< Bit3: Starting speed limit is actively reducing speed to zero
+                                                             target speed < starting speed */
+  ACCEL_BRAKE                = 0x0010,            /**< Bit4: Motor speed is not equal to target speed because of accleration or brake limits */
+  RC1_KILL                   = 0x0020,            /**< Bit5: RC1 is configured as kill switch and is active */
+  RC2_KILL                   = 0x0040,            /**< Bit6: RC2 is configured as kill switch and is active */
+  AN1_KILL                   = 0x0080,            /**< Bit7: AN1 is configured as kill switch and is active */
+  AN2_KILL                   = 0x0100,            /**< Bit8: AN2 is configured as kill switch and is active */
+  USB_KILL                   = 0x0200             /**< Bit9: USB kill switch is active */
+};
+
+/**
+ * Bitmask for reset flags in SMC_VAR::RESET_FLAGS
+ */
+enum class RESET_FLAGS: int16_t {
+
+  RST                        = 0x0004,            /**< RST pin pulled low by external source */
+  PWR                        = 0x000C,            /**< Power reset (VIN got too low or was disconnected) */
+  SOFTWARE                   = 0x0014,            /**< Software reset by firmware upgrade process */
+  WATCHDOG                   = 0x0024             /**< Watchdog timer reset */   
+};
+
 #endif /* SMC_DEFS_H_ */
