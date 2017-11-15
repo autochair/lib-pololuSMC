@@ -44,48 +44,50 @@ enum class COMPACT_COM: int8_t {
 
 /**
  * Enumeration of the number of bytes of data for each command.
+ * Includes the command byte itself
  * Pololu Format
  * 
  */
 enum class POLOLU_COM_BYTES: int8_t {
 
-    EXIT_SS                  = 2,               /**< No Data */-
-    MOTOR_FORWARD            = 4,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
+    EXIT_SS                  = 3,               /**< No Data */-
+    MOTOR_FORWARD            = 5,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
                                                      Byte2: Remaining bits of pwm (Spd >> 5) */
-    MOTOR_REVERSE            = 4,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
+    MOTOR_REVERSE            = 5,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
                                                      Byte2: Remaining bits of pwm (Spd >> 5) */
-    MOTOR_FORWARD_7BIT       = 3,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
-    MOTOR_REVERSE_7BIT       = 3,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
-    MOTOR_BRAKE              = 3,               /**< Byte1: Braking Duty Cycle 1-32 */
-    MOTOR_STOP               = 2,               /**< No Data */
-    SET_LIMIT                = 5,               /**< Byte1: Limit ID
+    MOTOR_FORWARD_7BIT       = 4,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
+    MOTOR_REVERSE_7BIT       = 4,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
+    MOTOR_BRAKE              = 4,               /**< Byte1: Braking Duty Cycle 1-32 */
+    MOTOR_STOP               = 3,               /**< No Data */
+    SET_LIMIT                = 6,               /**< Byte1: Limit ID
                                                      Byte2: Low 7 bits of limit val (Val & 0x7F)
                                                      Byte3: High 7 bits of limit val (Val >> 7) */
-    GET_SMC_VAR              = 3,               /**< Byte1: Variable ID */
-    GET_FIRMWARE             = 2                /**< No Data */
+    GET_SMC_VAR              = 4,               /**< Byte1: Variable ID */
+    GET_FIRMWARE             = 3                /**< No Data */
 };
 
 /**
  * Enumeration of the number of bytes of data for each command.
+ * Includes teh command byte itself
  * Compact Format
  * 
  */
 enum class COMPACT_COM_BYTES: int8_t {
 
-    EXIT_SS                  = 0,               /**< No Data */
-    MOTOR_FORWARD            = 2,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
+    EXIT_SS                  = 1,               /**< No Data */
+    MOTOR_FORWARD            = 3,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
                                                      Byte2: Remaining bits of pwm (Spd >> 5) */
-    MOTOR_REVERSE            = 2,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
+    MOTOR_REVERSE            = 4,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
                                                      Byte2: Remaining bits of pwm (Spd >> 5) */
-    MOTOR_FORWARD_7BIT       = 1,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
-    MOTOR_REVERSE_7BIT       = 1,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
-    MOTOR_BRAKE              = 1,               /**< Byte1: Braking Duty Cycle 1-32 */
-    MOTOR_STOP               = 0,               /**< No Data */
-    SET_LIMIT                = 3,               /**< Byte1: Limit ID
+    MOTOR_FORWARD_7BIT       = 2,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
+    MOTOR_REVERSE_7BIT       = 2,               /**< Byte1: Pwm in increments 0-127 (mapped from 0-3200) */
+    MOTOR_BRAKE              = 2,               /**< Byte1: Braking Duty Cycle 1-32 */
+    MOTOR_STOP               = 1,               /**< No Data */
+    SET_LIMIT                = 4,               /**< Byte1: Limit ID
                                                      Byte2: Low 7 bits of limit val (Val & 0x7F)
                                                      Byte3: High 7 bits of limit val (Val >> 7) */
-    GET_SMC_VAR              = 1,               /**< Byte1: Variable ID */
-    GET_FIRMWARE             = 0                /**< No Data */
+    GET_SMC_VAR              = 2,               /**< Byte1: Variable ID */
+    GET_FIRMWARE             = 1                /**< No Data */
 };
 
 /**
