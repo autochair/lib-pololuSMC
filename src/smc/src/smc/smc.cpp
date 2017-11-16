@@ -1,10 +1,10 @@
-
+#include "smc.h"
 
 /**
  * Initialize SMC
  * @param conn Reference to an open serial port
  */
-SMC::SMC(const SerialPort &conn)
+SMC::SMC(SerialPort &conn)
   :_conn(conn),
    _buffer()
 {
@@ -19,7 +19,7 @@ int SMC::exitSafeStart(){
   //use compact format for broadcast
   _buffer[0] = (char)COMPACT_COM::EXIT_SS;
 
-  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::EXIT_SS;
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::EXIT_SS);
 }
 
 /**
@@ -291,7 +291,7 @@ int SMC::setMotorLimit(uint8_t device, uint8_t limitID, uint16_t val, uint8_t &r
   int tmp = _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::SET_LIMIT);
 
   if(tmp){
-    getArray(_buffer, (int)COM_RES_BYTES::SET_LIMIT);
+    _conn.getArray(_buffer, (int)COM_RES_BYTES::SET_LIMIT);
     //get the last 3 bits for response code
     responseCode = _buffer[0] & 0x03;
   }
@@ -316,7 +316,7 @@ int SMC::setMotorLimit(uint8_t device, uint8_t limitID, uint16_t val, uint8_t &r
   int tmp = _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::GET_SMC_VAR);
 
   if(tmp){
-    getArray(_buffer, (int)COM_RES_BYTES::GET_SMC_VAR);
+    _conn.getArray(_buffer, (int)COM_RES_BYTES::GET_SMC_VAR);
     //combine two bytes to form 16 bit value
     variableVal = ((uint16_t)(_buffer[1]) << 8) | _buffer[0]; 
   }
@@ -342,6 +342,7 @@ int SMC::getFirmwareVersion(uint8_t device, uint16_t &productID, uint8_t &majorV
   int tmp = _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::GET_FIRMWARE);
 
   if(tmp){
+    _conn.getArray(_buffer, (int)COM_RES_BYTES::GET_FIRMWARE);
     productID = ((uint16_t)(_buffer[1]) << 8) | _buffer[0];
     minorVersion = _buffer[2];
     majorVersion = _buffer[3];

@@ -8,7 +8,7 @@
  * Pololu Format
  * OR the command with 0x80 to produce the command byte for the Compact Format
  */
-enum class POLOLU_COM: int8_t {
+enum class POLOLU_COM: uint8_t {
 
     EXIT_SS                  = 0x03,            /**< Exits safe start mode */
     MOTOR_FORWARD            = 0x05,            /**< Power Motor in Forward Direction */
@@ -28,7 +28,7 @@ enum class POLOLU_COM: int8_t {
  * Compact Format
  * OR the command with 0x80 to produce the command byte for the Compact Format
  */
-enum class COMPACT_COM: int8_t {
+enum class COMPACT_COM: uint8_t {
 
     EXIT_SS                  = 0x83,            /**< Exits safe start mode */
     MOTOR_FORWARD            = 0x85,            /**< Power Motor in Forward Direction */
@@ -48,9 +48,9 @@ enum class COMPACT_COM: int8_t {
  * Pololu Format
  * 
  */
-enum class POLOLU_COM_BYTES: int8_t {
+enum class POLOLU_COM_BYTES: uint8_t {
 
-    EXIT_SS                  = 3,               /**< No Data */-
+    EXIT_SS                  = 3,               /**< No Data */
     MOTOR_FORWARD            = 5,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
                                                      Byte2: Remaining bits of pwm (Spd >> 5) */
     MOTOR_REVERSE            = 5,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
@@ -72,7 +72,7 @@ enum class POLOLU_COM_BYTES: int8_t {
  * Compact Format
  * 
  */
-enum class COMPACT_COM_BYTES: int8_t {
+enum class COMPACT_COM_BYTES: uint8_t {
 
     EXIT_SS                  = 1,               /**< No Data */
     MOTOR_FORWARD            = 3,               /**< Byte1: Low 5 bits of pwm (Spd & 0x1F)
@@ -94,7 +94,7 @@ enum class COMPACT_COM_BYTES: int8_t {
  * The number of bytes returned for a command
  * Indepent of command format
  */
-enum class COM_RES_BYTES: int8_t {
+enum class COM_RES_BYTES: uint8_t {
 
     EXIT_SS                  = 0,               /**< No Response */
     MOTOR_FORWARD            = 0,               /**< No Response */
@@ -116,16 +116,16 @@ enum class COM_RES_BYTES: int8_t {
                                                      Byte4: Major Firmware Version (BDC) */
 };
 
-enum class SSC_COM: int8_t {
+enum class SSC_COM: uint8_t {
   SSC_PWM                    = 0XFF             /**< Set Motor Pwm, Direction Based On Value */
 };
 
-enum class SSC_COM_BYTES: int8_t {
+enum class SSC_COM_BYTES: uint8_t {
   SSC_PWM                    = 2                /**< Byte1: device ID
                                                      Byte2: Pwm, 0-Full Reverse, 127-Still, 254-Full Forward */
 };
 
-enum class SMC_VAR: int8_t {
+enum class SMC_VAR: uint8_t {
 
   //status flag registers
   ERROR_STATUS               = 0x00,            /**< Errors that are currently stopping the motor */

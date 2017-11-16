@@ -8,11 +8,11 @@
 class SMC {
 private:
 
-  const SerialPort& _conn; /**< Serial Port for SMC communication */
+  SerialPort& _conn; /**< Serial Port for SMC communication */
   char _buffer[6];
 
   void initPololuMsg(uint8_t device){
-    _buffer[0] = POLOLU_COM::HEADER;
+    _buffer[0] = (char)POLOLU_COM::HEADER;
     _buffer[1] = device;
   };
 
@@ -22,7 +22,7 @@ public:
    * Initialize SMC
    * @param conn Reference to an open serial port
    */
-  SMC(const SerialPort &conn);
+  SMC(SerialPort &conn);
 
   /**
    * Sends the exit safe start command to all devices
@@ -142,6 +142,6 @@ public:
    */
   int getFirmwareVersion(uint8_t device, uint16_t &productID, uint8_t &majorVersion, uint8_t &minorVersion);
   
-}
+};
 
 #endif /* SMC_H_ */
