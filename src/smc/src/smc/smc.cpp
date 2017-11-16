@@ -6,7 +6,7 @@
  */
 SMC::SMC(const SerialPort &conn)
   :_conn(conn),
-   buffer()
+   _buffer()
 {
 }
 
@@ -17,9 +17,9 @@ SMC::SMC(const SerialPort &conn)
 int SMC::exitSafeStart(){
 
   //use compact format for broadcast
-  buffer[0] = (int)COMPACT_COM::EXIT_SS;
+  _buffer[0] = (char)COMPACT_COM::EXIT_SS;
 
-  return _conn.sendArray(buffer, (int)COMPACT_COM_BYTES::EXIT_SS;
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::EXIT_SS;
 }
 
 /**
@@ -30,22 +30,35 @@ int SMC::exitSafeStart(){
 int SMC::exitSafeStart(uint8_t device){
 
   // use pololu format for single device
+  // fill in first two bytes
   initPololuMsg(device);
 
-  //start filling in buffer at [2]
-  buffer[2] = POLOLU_COM::EXIT_SS;
+  //start filling in _buffer at [2]
+  _buffer[2] = (char)POLOLU_COM::EXIT_SS;
 
-  return _conn.sendArray(buffer, (int)POLOLU_COM_BYTES::EXIT_SS);
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::EXIT_SS);
 }
 
 /**
  * Sends forward pwm value to all devices
- * @param pwm value between 0-3200
+ * @param pwm value between 0-3200 that maps to 0-100% duty cycle
  */
 int SMC::motorForward(uint16_t pwm){
 
-  //use compact format for broadcast
-  buffer[0] = (int)COMPACT_COM::MOTOR_FORWARD;
+  // return instead of clamping to 3200 for safety
+  if(pwm > 3200)
+    return 0;
+
+  // use compact format for broadcast
+  _buffer[0] = (char)COMPACT_COM::MOTOR_FORWARD;
+
+  // first byte is lower 5 bits of pwm
+  _buffer[1] = pwm & 0x1F;
+  // second byte is the remaining upper 7 bits
+  _buffer[2] = pwm >> 5;
+
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_FORWARD);
+  
 }
 
 /**
@@ -54,7 +67,21 @@ int SMC::motorForward(uint16_t pwm){
  * @param pwm value between 0-3200
  */
 int SMC::motorForward(uint8_t device, uint16_t pwm){
-  
+
+  // return instead of clamping to 3200 for safety
+  if(pwm > 3200)
+    return 0;
+
+  // use pololu format for single device
+  // fill in first two bytes
+  initPololuMsg(device);
+
+  // start filling in _buffer at [2]
+  _buffer[2] = (char)POLOLU_COM::MOTOR_FORWARD;
+  _buffer[3] = pwm & 0x1F;
+  _buffer[4] = pwm >> 5;
+
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_FORWARD);
 }
 
 /**
@@ -63,8 +90,16 @@ int SMC::motorForward(uint8_t device, uint16_t pwm){
  */
 int SMC::motorReverse(uint16_t pwm){
 
+  // return instead of clamping to 3200 for safety
+  if(pwm > 3200)
+    return 0;
+
   //use compact format for broadcast
-  buffer[0] = (int)COMPACT_COM::MOTOR_REVERSE;
+  _buffer[0] = (int)COMPACT_COM::MOTOR_REVERSE;
+  _buffer[1] = pwm & 0x1F;
+  _buffer[2] = pwm >> 5;
+
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_REVERSE);
 }
 
 /**
@@ -73,7 +108,21 @@ int SMC::motorReverse(uint16_t pwm){
  * @param pwm value between 0-3200
  */
 int SMC::motorReverse(uint8_t device, uint16_t pwm){
-  
+
+  // return instead of clamping to 3200 for safety
+  if(pwm > 3200)
+    return 0;
+
+  // use pololu format for single device
+  // fill in first two bytes
+  initPololuMsg(device);
+
+  _buffer[2] = (char)POLOLU_COM::MOTOR_REVERSE;
+  _buffer[3] = pwm & 0x1F;
+  _buffer[4] = pwm >> 5;
+
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_REVERSE);
+
 }
 
 /**
@@ -82,8 +131,15 @@ int SMC::motorReverse(uint8_t device, uint16_t pwm){
  */
 int SMC::motorForward_7Bit(uint8_t pwm ){
 
+  // return instead of clamping to 3200 for safety
+  if(pwm > 127)
+    return 0;
+
   //use compact format for broadcast
-  buffer[0] = (int)COMPACT_COM::MOTOR_FORWARD_7BIT;
+  _buffer[0] = (int)COMPACT_COM::MOTOR_FORWARD_7BIT;
+  _buffer[1] = pwm;
+
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_FORWARD_7BIT);
 }
 
 /**
@@ -92,7 +148,19 @@ int SMC::motorForward_7Bit(uint8_t pwm ){
  * @param pwm value between 0-127
  */
 int SMC::motorForward_7Bit(uint8_t device, uint8_t pwm){
-  
+
+    // return instead of clamping to 3200 for safety
+  if(pwm > 127)
+    return 0;
+
+  // use pololu format for single device
+  // fill in first two bytes
+  initPololuMsg(device);
+
+  _buffer[2] = (char)POLOLU_COM::MOTOR_FORWARD_7BIT;
+  _buffer[3] = pwm;
+
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_FORWARD_7BIT);
 }
 
 /**
@@ -101,8 +169,15 @@ int SMC::motorForward_7Bit(uint8_t device, uint8_t pwm){
  */
 int SMC::motorReverse_7Bit(uint8_t pwm){
 
+  // return instead of clamping to 3200 for safety
+  if(pwm > 127)
+    return 0;
+
   //use compact format for broadcast
-  buffer[0] = (int)COMPACT_COM::MOTOR_REVERSE_7BIT;
+  _buffer[0] = (int)COMPACT_COM::MOTOR_REVERSE_7BIT;
+  _buffer[1] = pwm;
+
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_REVERSE_7BIT);
 }
 
 /**
@@ -111,7 +186,19 @@ int SMC::motorReverse_7Bit(uint8_t pwm){
  * @param pwm value between 0-127
  */
 int SMC::motorReverse_7Bit(uint8_t device, uint8_t pwm){
-  
+
+  // return instead of clamping to 3200 for safety
+  if(pwm > 127)
+    return 0;
+
+  // use pololu format for single device
+  // fill in first two bytes
+  initPololuMsg(device);
+
+  _buffer[2] = (char)POLOLU_COM::MOTOR_REVERSE_7BIT;
+  _buffer[3] = pwm;
+
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_REVERSE_7BIT);
 }
 
 /**
@@ -120,8 +207,15 @@ int SMC::motorReverse_7Bit(uint8_t device, uint8_t pwm){
  */
 int SMC::motorBrake(uint8_t duty){
 
+  // return instead of clamping to 3200 for safety
+  if(duty > 32)
+    return 0;
+
   //use compact format for broadcast
-  buffer[0] = (int)COMPACT_COM::MOTOR_BRAKE;
+  _buffer[0] = (int)COMPACT_COM::MOTOR_BRAKE;
+  _buffer[1] = duty;
+
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_BRAKE);
 }
 
 /**
@@ -130,7 +224,19 @@ int SMC::motorBrake(uint8_t duty){
  * @param Duty cycle value between 1-32
  */
 int SMC::motorBrake(uint8_t device, uint8_t duty){
+
+  // return instead of clamping to 3200 for safety
+  if(duty > 32)
+    return 0;
   
+  // use pololu format for single device
+  // fill in first two bytes
+  initPololuMsg(device);
+
+  _buffer[2] = (char)POLOLU_COM::MOTOR_BRAKE;
+  _buffer[3] = duty;
+
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_BRAKE);
 }
 
 /**
@@ -140,7 +246,9 @@ int SMC::motorBrake(uint8_t device, uint8_t duty){
 int SMC::motorStop(){
 
   //use compact format for broadcast
-  buffer[0] = (int)COMPACT_COM::MOTOR_STOP;
+  _buffer[0] = (int)COMPACT_COM::MOTOR_STOP;
+
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_STOP);
 }
   
 /**
@@ -149,7 +257,14 @@ int SMC::motorStop(){
  * @param uint8_t ID of device
  */
 int SMC::motorStop(uint8_t device){
-  
+
+  // use pololu format for single device
+  // fill in first two bytes
+  initPololuMsg(device);
+
+  _buffer[2] = (char)POLOLU_COM::MOTOR_STOP;
+
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_STOP);
 }
 
 /**
@@ -161,7 +276,26 @@ int SMC::motorStop(uint8_t device){
  * @return 1 if success, 0 if failed to send
  */
 int SMC::setMotorLimit(uint8_t device, uint8_t limitID, uint16_t val, uint8_t &responseCode){
-  
+
+  // use pololu format for single device
+  // fill in first two bytes
+  initPololuMsg(device);
+
+  _buffer[2] = (char)POLOLU_COM::SET_LIMIT;
+  _buffer[3] = limitID;
+  //byte 4 is low 7 bits of val
+  _buffer[4] = val & 0x7F;
+  //byte 5 is remaining 7 high bits of val
+  _buffer[5] = val >> 7;
+
+  int tmp = _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::SET_LIMIT);
+
+  if(tmp){
+    getArray(_buffer, (int)COM_RES_BYTES::SET_LIMIT);
+    //get the last 3 bits for response code
+    responseCode = _buffer[0] & 0x03;
+  }
+  return tmp;
 }
 
 /**
@@ -169,8 +303,24 @@ int SMC::setMotorLimit(uint8_t device, uint8_t limitID, uint16_t val, uint8_t &r
  * @param uint8_t ID of device
  * @param uint8_t ID of variable
  */
-int SMC::getMotorVariable(uint8_t device, uint8_t variableID){
-  
+ int SMC::getMotorVariable(uint8_t device, uint8_t variableID, uint16_t &variableVal){
+
+  // use pololu format for single device
+  // fill in first two bytes
+  initPololuMsg(device);
+
+  _buffer[2] = (char)POLOLU_COM::GET_SMC_VAR;
+
+  _buffer[3] = variableID;
+
+  int tmp = _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::GET_SMC_VAR);
+
+  if(tmp){
+    getArray(_buffer, (int)COM_RES_BYTES::GET_SMC_VAR);
+    //combine two bytes to form 16 bit value
+    variableVal = ((uint16_t)(_buffer[1]) << 8) | _buffer[0]; 
+  }
+  return tmp;
 }
 
 /**
@@ -182,5 +332,19 @@ int SMC::getMotorVariable(uint8_t device, uint8_t variableID){
  * @return 1 if success
  */
 int SMC::getFirmwareVersion(uint8_t device, uint16_t &productID, uint8_t &majorVersion, uint8_t &minorVersion){
-  
+
+  // use pololu format for single device
+  // fill in first two bytes
+  initPololuMsg(device);
+
+  _buffer[2] = (char)POLOLU_COM::GET_FIRMWARE;
+
+  int tmp = _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::GET_FIRMWARE);
+
+  if(tmp){
+    productID = ((uint16_t)(_buffer[1]) << 8) | _buffer[0];
+    minorVersion = _buffer[2];
+    majorVersion = _buffer[3];
+  }
+  return tmp;
 }

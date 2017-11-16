@@ -5,17 +5,15 @@
 #include "defs.h"
 #include <string>
 
-#define MAX_NUM_SMC_DEVICES 127
-
 class SMC {
 private:
 
   const SerialPort& _conn; /**< Serial Port for SMC communication */
-  char buffer[6];
+  char _buffer[6];
 
   void initPololuMsg(uint8_t device){
-    buffer[0] = POLOLU_COM::HEADER;
-    buffer[1] = device;
+    _buffer[0] = POLOLU_COM::HEADER;
+    _buffer[1] = device;
   };
 
 public:
@@ -132,7 +130,7 @@ public:
    * @param uint8_t ID of device
    * @param uint8_t ID of variable
    */
-  int getMotorVariable(uint8_t device, uint8_t variableID);
+  int getMotorVariable(uint8_t device, uint8_t variableID, uint16_t &variableVal);
 
   /**
    * Reads the firmware version of a specific device
