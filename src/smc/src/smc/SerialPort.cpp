@@ -1,7 +1,7 @@
 #include <string.h>
 #include <sys/ioctl.h>
 
-#include "SerialPort.h"
+#include "smc/SerialPort.h"
 
 
 

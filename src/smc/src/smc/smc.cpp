@@ -1,4 +1,4 @@
-#include "smc.h"
+#include "smc/smc.h"
 #include "smc/SerialPort.h"
 
 
