@@ -1,5 +1,5 @@
 <package format="2">
-  <name>SMC</name>
+  <name>smc</name>
   <version>0.0.1</version>
   <description>Pololu Simple Motor Controller Library</description>
 
