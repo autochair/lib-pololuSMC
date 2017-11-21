@@ -231,20 +231,20 @@ enum class SMC_VAR: uint8_t {
  * Soft Limit IDs
  */
 enum class SOFT_LIMIT: uint8_t {
-  MAX_SPEED_BOTH             = 0x00,            /**< Sets both forward and backward max speed */
+  MAX_PWM_BOTH             = 0x00,            /**< Sets both forward and backward max speed */
   MAX_ACCELERATION_BOTH      = 0x01,            /**< Sets both forward and backward max accel */
   MAX_DECELERATION_BOTH      = 0x02,            /**< Sets both forward and backward max decel */
   BRAKE_DURATION_BOTH        = 0x03,            /**< Sets both forward and backward brake duration */
-  MAX_SPEED_FORWARD          = 0x04,            /**< Sets forward max speed */
+  MAX_PWM_FORWARD          = 0x04,            /**< Sets forward max speed */
   MAX_ACCELERATION_FORWARD   = 0x05,            /**< Sets forward max accel */
   MAX_DECELERATION_FORWARD   = 0x06,            /**< Sets forward max decel */
   BRAKE_DURATION_FORWARD     = 0x07,            /**< Sets forward brake duration */
-  MAX_SPEED_REVERSE          = 0x08,            /**< Sets backward max speed */
+  MAX_PWM_REVERSE          = 0x08,            /**< Sets backward max speed */
   MAX_ACCELERATION_REVERSE   = 0x09,            /**< Sets backward max accel */
   MAX_DECELERATION_REVERSE   = 0x0A,            /**< Sets backward max decel */
   BRAKE_DURATION_REVERSE     = 0x0B,            /**< Sets backward brake duration */
   
-}
+};
 
 
 /**
