@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(smc)
+project(SMC)
 
 find_package(catkin REQUIRED COMPONENTS)
 
@@ -25,7 +25,7 @@ else()
 endif()
 
 include_directories(include)
-add_library(smc
+add_library(SMC
   src/smc/smc.cpp
   src/smc/SerialPort.cpp)
 

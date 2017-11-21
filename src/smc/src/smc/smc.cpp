@@ -3,30 +3,13 @@
 
 
 /**
- * Default Ctor
- */
-SMC::SMC()
-  :_buffer(),
-   _conn()
-{
-}
-
-/**
  * Initialize SMC
- * @param conn pointer to an open serial port
+ * @param conn Reference to an open serial port
  */
-SMC::SMC(SerialPort* conn)
+SMC::SMC(SerialPort &conn)
   :_conn(conn),
    _buffer()
 {
-}
-
-/**
- * Add a serial port 
- * @param conn pointer to an open serial port
- */
-void SMC::setPort(SerialPort* conn){
-  _conn = conn;
 }
 
 /**
@@ -38,7 +21,7 @@ int SMC::exitSafeStart(){
   //use compact format for broadcast
   _buffer[0] = (char)COMPACT_COM::EXIT_SS;
 
-  return _conn->sendArray(_buffer, (int)COMPACT_COM_BYTES::EXIT_SS);
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::EXIT_SS);
 }
 
 /**
@@ -55,7 +38,7 @@ int SMC::exitSafeStart(uint8_t device){
   //start filling in _buffer at [2]
   _buffer[2] = (char)POLOLU_COM::EXIT_SS;
 
-  return _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::EXIT_SS);
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::EXIT_SS);
 }
 
 /**
@@ -76,7 +59,7 @@ int SMC::motorForward(uint16_t pwm){
   // second byte is the remaining upper 7 bits
   _buffer[2] = pwm >> 5;
 
-  return _conn->sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_FORWARD);
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_FORWARD);
   
 }
 
@@ -100,7 +83,7 @@ int SMC::motorForward(uint8_t device, uint16_t pwm){
   _buffer[3] = pwm & 0x1F;
   _buffer[4] = pwm >> 5;
 
-  return _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_FORWARD);
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_FORWARD);
 }
 
 /**
@@ -118,7 +101,7 @@ int SMC::motorReverse(uint16_t pwm){
   _buffer[1] = pwm & 0x1F;
   _buffer[2] = pwm >> 5;
 
-  return _conn->sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_REVERSE);
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_REVERSE);
 }
 
 /**
@@ -140,7 +123,7 @@ int SMC::motorReverse(uint8_t device, uint16_t pwm){
   _buffer[3] = pwm & 0x1F;
   _buffer[4] = pwm >> 5;
 
-  return _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_REVERSE);
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_REVERSE);
 
 }
 
@@ -158,7 +141,7 @@ int SMC::motorForward_7Bit(uint8_t pwm ){
   _buffer[0] = (int)COMPACT_COM::MOTOR_FORWARD_7BIT;
   _buffer[1] = pwm;
 
-  return _conn->sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_FORWARD_7BIT);
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_FORWARD_7BIT);
 }
 
 /**
@@ -179,7 +162,7 @@ int SMC::motorForward_7Bit(uint8_t device, uint8_t pwm){
   _buffer[2] = (char)POLOLU_COM::MOTOR_FORWARD_7BIT;
   _buffer[3] = pwm;
 
-  return _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_FORWARD_7BIT);
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_FORWARD_7BIT);
 }
 
 /**
@@ -196,7 +179,7 @@ int SMC::motorReverse_7Bit(uint8_t pwm){
   _buffer[0] = (int)COMPACT_COM::MOTOR_REVERSE_7BIT;
   _buffer[1] = pwm;
 
-  return _conn->sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_REVERSE_7BIT);
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_REVERSE_7BIT);
 }
 
 /**
@@ -217,7 +200,7 @@ int SMC::motorReverse_7Bit(uint8_t device, uint8_t pwm){
   _buffer[2] = (char)POLOLU_COM::MOTOR_REVERSE_7BIT;
   _buffer[3] = pwm;
 
-  return _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_REVERSE_7BIT);
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_REVERSE_7BIT);
 }
 
 /**
@@ -234,7 +217,7 @@ int SMC::motorBrake(uint8_t duty){
   _buffer[0] = (int)COMPACT_COM::MOTOR_BRAKE;
   _buffer[1] = duty;
 
-  return _conn->sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_BRAKE);
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_BRAKE);
 }
 
 /**
@@ -255,7 +238,7 @@ int SMC::motorBrake(uint8_t device, uint8_t duty){
   _buffer[2] = (char)POLOLU_COM::MOTOR_BRAKE;
   _buffer[3] = duty;
 
-  return _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_BRAKE);
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_BRAKE);
 }
 
 /**
@@ -267,7 +250,7 @@ int SMC::motorStop(){
   //use compact format for broadcast
   _buffer[0] = (int)COMPACT_COM::MOTOR_STOP;
 
-  return _conn->sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_STOP);
+  return _conn.sendArray(_buffer, (int)COMPACT_COM_BYTES::MOTOR_STOP);
 }
   
 /**
@@ -283,7 +266,7 @@ int SMC::motorStop(uint8_t device){
 
   _buffer[2] = (char)POLOLU_COM::MOTOR_STOP;
 
-  return _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_STOP);
+  return _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::MOTOR_STOP);
 }
 
 /**
@@ -307,10 +290,10 @@ int SMC::setMotorLimit(uint8_t device, uint8_t limitID, uint16_t val, uint8_t &r
   //byte 5 is remaining 7 high bits of val
   _buffer[5] = val >> 7;
 
-  int tmp = _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::SET_LIMIT);
+  int tmp = _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::SET_LIMIT);
 
   if(tmp){
-    _conn->getArray(_buffer, (int)COM_RES_BYTES::SET_LIMIT);
+    _conn.getArray(_buffer, (int)COM_RES_BYTES::SET_LIMIT);
     //get the last 3 bits for response code
     responseCode = _buffer[0] & 0x03;
   }
@@ -331,10 +314,10 @@ int SMC::setMotorLimit(uint8_t device, uint8_t limitID, uint16_t val, uint8_t &r
   _buffer[2] = (char)POLOLU_COM::GET_SMC_VAR;
 
   _buffer[3] = variableID;
-  int tmp = _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::GET_SMC_VAR);
+  int tmp = _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::GET_SMC_VAR);
 
   if(tmp){
-    _conn->getArray(_buffer, (int)COM_RES_BYTES::GET_SMC_VAR);
+    _conn.getArray(_buffer, (int)COM_RES_BYTES::GET_SMC_VAR);
     //combine two bytes to form 16 bit value
     variableVal = ((uint16_t)(_buffer[1]) << 8) | _buffer[0];
     //variableVal = _buffer[0] + 256*_buffer[1];
@@ -358,10 +341,10 @@ int SMC::getFirmwareVersion(uint8_t device, uint16_t &productID, uint8_t &majorV
 
   _buffer[2] = (char)POLOLU_COM::GET_FIRMWARE;
 
-  int tmp = _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::GET_FIRMWARE);
+  int tmp = _conn.sendArray(_buffer, (int)POLOLU_COM_BYTES::GET_FIRMWARE);
 
   if(tmp){
-    _conn->getArray(_buffer, (int)COM_RES_BYTES::GET_FIRMWARE);
+    _conn.getArray(_buffer, (int)COM_RES_BYTES::GET_FIRMWARE);
     productID = ((uint16_t)(_buffer[1]) << 8) | _buffer[0];
     minorVersion = (uint8_t)_buffer[2];
     majorVersion = (uint8_t)_buffer[3];
