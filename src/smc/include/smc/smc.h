@@ -8,7 +8,7 @@
 class SMC {
 private:
 
-  SerialPort& _conn; /**< Serial Port for SMC communication */
+  SerialPort* _conn; /**< Serial Port for SMC communication */
   char _buffer[6];
 
   void initPololuMsg(uint8_t device){
@@ -19,10 +19,21 @@ private:
 public:
 
   /**
+   *Default ctor
+   */
+  SMC();
+  
+  /**
    * Initialize SMC
    * @param conn Reference to an open serial port
    */
-  SMC(SerialPort &conn);
+  SMC(SerialPort* conn);
+
+  /**
+   * Add a serial port reference
+   * @param conn reference to an open serial port
+   */
+  void setPort(SerialPort* conn);
 
   /**
    * Sends the exit safe start command to all devices
