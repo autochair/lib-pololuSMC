@@ -250,7 +250,7 @@ enum class SOFT_LIMIT: uint8_t {
 /**
  * Bitmask for errors in SMC_VAR::ERROR_SATUS
  */
-enum class ERROR_STATUS: int16_t {
+enum class ERROR_STATUS: uint16_t {
 
   SAFE_START                 = 0x0001,            /**< Bit0: Safe start violation error */
   CHANNEL_INVALID            = 0x0002,            /**< Bit1: Required Channel Invalid */
@@ -268,7 +268,7 @@ enum class ERROR_STATUS: int16_t {
 /**
  * Bitmask for serial errors in SMC_VAR::SERIAL_ERRORS
  */
-enum class SERIAL_ERROR: int16_t {
+enum class SERIAL_ERROR: uint16_t {
 
   FRAME                      = 0x0002,            /**< Bit1: Frame */
   NOISE                      = 0x0004,            /**< Bit2: Noise */
@@ -280,7 +280,7 @@ enum class SERIAL_ERROR: int16_t {
 /*
  * Bitmask for limit statuses in SMC_VAR::LIMIT_STATUS
  */
-enum class LIMIT_STATUS: int16_t {
+enum class LIMIT_STATUS: uint16_t {
 
   SAFE_START                 = 0x0001,            /**< Bit0: Safe Start violation */
   OVER_TEMPERATURE           = 0x0002,            /**< Bit1: Temperature is actively reducing pwm */
@@ -299,7 +299,7 @@ enum class LIMIT_STATUS: int16_t {
 /**
  * Bitmask for reset flags in SMC_VAR::RESET_FLAGS
  */
-enum class RESET_FLAGS: int16_t {
+enum class RESET_FLAGS: uint16_t {
 
   RST                        = 0x0004,            /**< RST pin pulled low by external source */
   PWR                        = 0x000C,            /**< Power reset (VIN got too low or was disconnected) */
