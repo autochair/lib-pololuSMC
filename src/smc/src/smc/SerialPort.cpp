@@ -2,18 +2,20 @@
 #include <sys/ioctl.h>
 
 #include "smc/SerialPort.h"
+#include "blocking_reader.h"
 
 
 
-SerialPort::SerialPort() {
+SerialPort::SerialPort(){
   port = new boost::asio::serial_port(io);
 }
 
 
-int SerialPort::connect(std::string device, int baud) {
+int SerialPort::connect(std::string device, int baud, size_t timeout) {
   try{
     port->open((char *) device.c_str());
     port->set_option(boost::asio::serial_port_base::baud_rate(baud));
+    reader = new blocking_reader(*port, timeout);
     return 1;
   }
   catch(...){
@@ -39,7 +41,7 @@ int SerialPort::sendString(std::string msg){
 int SerialPort::getArray (char *buffer, int len){
   char rcvChar;
   int i = 0;
-  while ( i < len && boost::asio::read( *port, boost::asio::buffer(&rcvChar,1) ) == 1 )
+  while ( i < len && reader.read_char(rcvChar))
     buffer[i++] = rcvChar;
   return i;
 }

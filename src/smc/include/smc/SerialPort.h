@@ -11,12 +11,15 @@
 #include <boost/asio.hpp>
 #include <boost/asio/deadline_timer.hpp> 
 #include <boost/bind.hpp>
+
+#include "blocking_reader.h"
  
 class SerialPort {
  private:
   boost::asio::io_service io;
   boost::asio::serial_port *port;
- public:
+  blocking_reader reader;
+public:
     SerialPort();
   
   int connect (std::string device, int baud);
