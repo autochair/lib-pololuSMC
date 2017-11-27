@@ -15,7 +15,7 @@ int SerialPort::connect(std::string device, int baud, size_t timeout) {
   try{
     port->open((char *) device.c_str());
     port->set_option(boost::asio::serial_port_base::baud_rate(baud));
-    reader = new blocking_reader(*port, timeout);
+    reader = new blocking_reader(port, timeout);
     return 1;
   }
   catch(...){
