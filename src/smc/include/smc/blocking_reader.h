@@ -57,8 +57,6 @@ class blocking_reader
  
 public:
 
-  blocking_reader(){}
- 
   // Constructs a blocking reader, pass in an open serial_port and
   // a timeout in milliseconds.
   blocking_reader(boost::asio::serial_port * port, size_t timeout) :
