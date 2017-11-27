@@ -59,7 +59,7 @@ public:
  
   // Constructs a blocking reader, pass in an open serial_port and
   // a timeout in milliseconds.
-  blocking_reader(boost::asio::serial_port& port, size_t timeout) :
+  blocking_reader(boost::asio::serial_port * port, size_t timeout) :
     port(port), timeout(timeout),
     timer(port->get_io_service()),
     read_error(true) {
