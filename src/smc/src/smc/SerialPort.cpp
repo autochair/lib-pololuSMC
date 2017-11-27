@@ -41,7 +41,7 @@ int SerialPort::sendString(std::string msg){
 int SerialPort::getArray (char *buffer, int len){
   char rcvChar;
   int i = 0;
-  while ( i < len && reader.read_char(rcvChar))
+  while ( i < len && reader->read_char(rcvChar))
     buffer[i++] = rcvChar;
   return i;
 }

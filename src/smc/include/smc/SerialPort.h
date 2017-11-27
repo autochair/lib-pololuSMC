@@ -18,7 +18,7 @@ class SerialPort {
  private:
   boost::asio::io_service io;
   boost::asio::serial_port *port;
-  blocking_reader reader;
+  blocking_reader *reader;
 public:
     SerialPort();
   
