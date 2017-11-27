@@ -22,7 +22,7 @@
  
 class blocking_reader
 {
-  boost::asio::serial_port& port;
+  boost::asio::serial_port * port;
   size_t timeout;
   char c;
   boost::asio::deadline_timer timer;
@@ -52,7 +52,7 @@ class blocking_reader
     // the read operation
     // The read callback will be called
     // with an error
-    port.cancel();
+    port->cancel();
   }
  
 public:
@@ -61,7 +61,7 @@ public:
   // a timeout in milliseconds.
   blocking_reader(boost::asio::serial_port& port, size_t timeout) :
     port(port), timeout(timeout),
-    timer(port.get_io_service()),
+    timer(port->get_io_service()),
     read_error(true) {
 		 
   }
@@ -74,7 +74,7 @@ public:
  
     // After a timeout & cancel it seems we need
     // to do a reset for subsequent reads to work.
-    port.get_io_service().reset();
+    port->get_io_service().reset();
  
     // Asynchronously read 1 character.
     boost::asio::async_read(port, boost::asio::buffer(&c, 1), 
@@ -90,7 +90,7 @@ public:
  
     // This will block until a character is read
     // or until the it is cancelled.
-    port.get_io_service().run();
+    port->get_io_service().run();
  
     if (!read_error)
       val = c;

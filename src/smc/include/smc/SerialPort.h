@@ -22,7 +22,7 @@ class SerialPort {
 public:
     SerialPort();
   
-  int connect (std::string device, int baud);
+  int connect (std::string device, int baud, size_t timeout);
   void disconnect(void);
 
   int sendArray(char *buffer, int len);
