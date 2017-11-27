@@ -2,7 +2,7 @@
 #include <sys/ioctl.h>
 
 #include "smc/SerialPort.h"
-#include "blocking_reader.h"
+#include "smc/blocking_reader.h"
 
 
 
