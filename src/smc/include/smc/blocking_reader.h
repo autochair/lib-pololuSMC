@@ -77,7 +77,7 @@ public:
     port->get_io_service().reset();
  
     // Asynchronously read 1 character.
-    boost::asio::async_read(port, boost::asio::buffer(&c, 1), 
+    boost::asio::async_read(*port, boost::asio::buffer(&c, 1), 
                             boost::bind(&blocking_reader::read_complete, 
                                         this, 
                                         boost::asio::placeholders::error, 
