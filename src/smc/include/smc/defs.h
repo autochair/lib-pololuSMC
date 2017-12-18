@@ -261,7 +261,9 @@ enum class ERROR_STATUS: uint16_t {
   HIGH_VIN                   = 0x0040,            /**< Bit6: High Input Voltage */
   OVER_TEMPERATURE           = 0x0080,            /**< Bit7: Over Temperature */
   MOTOR_DRIVE_ERROR          = 0x0100,            /**< Bit8: Motor Drive Error */
-  ERR_LINE                   = 0x0200             /**< Bit9: Error Line High */
+  ERR_LINE                   = 0x0200,            /**< Bit9: Error Line High */
+
+  RESERVED                   = 0xFC00             /**< Bit10-15: Reserved Bits */
 };
 
 
