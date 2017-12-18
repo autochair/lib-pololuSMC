@@ -310,11 +310,11 @@ int SMC::setMotorLimit(uint8_t device, uint8_t limitID, uint16_t val, uint8_t &r
   int tmp = _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::SET_LIMIT);
 
   if(tmp){
-    _conn->getArray(_buffer, (int)COM_RES_BYTES::SET_LIMIT);
+    tmp = _conn->getArray(_buffer, (int)COM_RES_BYTES::SET_LIMIT);
     //get the last 3 bits for response code
     responseCode = _buffer[0] & 0x03;
   }
-  return tmp;
+  return tmp == (int)COM_RES_BYTES::SET_LIMIT;
 }
 
 /**
@@ -334,12 +334,12 @@ int SMC::setMotorLimit(uint8_t device, uint8_t limitID, uint16_t val, uint8_t &r
   int tmp = _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::GET_SMC_VAR);
 
   if(tmp){
-    _conn->getArray(_buffer, (int)COM_RES_BYTES::GET_SMC_VAR);
+    tmp = _conn->getArray(_buffer, (int)COM_RES_BYTES::GET_SMC_VAR);
     //combine two bytes to form 16 bit value
     variableVal = ((uint16_t)(_buffer[1]) << 8) | _buffer[0];
     //variableVal = _buffer[0] + 256*_buffer[1];
   }
-  return tmp;
+  return tmp == (int)COM_RES_BYTES::GET_SMC_VAR;
 }
 
 /**
@@ -361,10 +361,10 @@ int SMC::getFirmwareVersion(uint8_t device, uint16_t &productID, uint8_t &majorV
   int tmp = _conn->sendArray(_buffer, (int)POLOLU_COM_BYTES::GET_FIRMWARE);
 
   if(tmp){
-    _conn->getArray(_buffer, (int)COM_RES_BYTES::GET_FIRMWARE);
+    tmp =_conn->getArray(_buffer, (int)COM_RES_BYTES::GET_FIRMWARE);
     productID = ((uint16_t)(_buffer[1]) << 8) | _buffer[0];
     minorVersion = (uint8_t)_buffer[2];
     majorVersion = (uint8_t)_buffer[3];
   }
-  return tmp;
+  return tmp == (int)COM_RES_BYTES::GET_FIRMWARE;
 }

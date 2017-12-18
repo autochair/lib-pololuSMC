@@ -28,6 +28,7 @@ public:
   int sendArray(char *buffer, int len);
   int sendString(std::string msg);
   int getArray (char *buffer, int len);
+  int isOpen();
 
   enum flush_type
   {

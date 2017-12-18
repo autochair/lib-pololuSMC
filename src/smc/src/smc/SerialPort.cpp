@@ -46,6 +46,10 @@ int SerialPort::getArray (char *buffer, int len){
   return i;
 }
 
+int SerialPort::isOpen(){
+  return port->is_open();
+}
+
 void SerialPort::flushPort(flush_type what){
   ::tcflush(this->port->lowest_layer().native_handle(), what);
 }
